@@ -1,4 +1,40 @@
-body {
-    background-color: lightblue;
-    font-family: Arial, sans-serif;
+   body {
+        background-color: lightblue; font-family: 'Times New Roman', Times, serif;
+    }
+
+    #metric-converter {
+    background-color:azure;
+    border: 1px solid #cccccc;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+#metric-converter form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#metric-converter input,
+#metric-converter select,
+#metric-converter button {
+    padding: 10px;
+}
+
+#metric-converter button {
+    background-color:cornflowerblue;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#metric-converter button:hover {
+    background-color: #053c8e;
+}
+
+#conversion-result {
+    margin-top: 15px;
+    font-weight: bold;
 }
