@@ -38,3 +38,58 @@
     margin-top: 15px;
     font-weight: bold;
 }
+
+/* Dashboard heading */
+.dashboard-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.dashboard-header h1 {
+    margin-bottom: 10px;
+}
+
+
+/* Container for the three applications */
+.dashboard-apps {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 25px;
+    flex-wrap: wrap;
+    padding: 20px;
+}
+
+
+/* Individual application boxes */
+.dashboard-card {
+    width: 350px;
+    min-height: 400px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+
+/* Center titles inside each app */
+.dashboard-card h2,
+.dashboard-card h3 {
+    text-align: center;
+}
+
+
+/* Inputs stay inside their boxes */
+.dashboard-card input,
+.dashboard-card select {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+}
+
+
+/* Buttons */
+.dashboard-card button {
+    margin-top: 5px;
+}
