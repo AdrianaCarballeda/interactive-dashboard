@@ -24,17 +24,22 @@
     <!-- Magic Eight Ball JavaScript -->
     <script defer src="js/magic-eight-ball.js"></script>
 
+    <!--Task Manager JavaScript -->
+    <script defer src="js/task-manager.js"></script>
+
 
 </head>
 
 
 <body>
-    <h1>My Interactive Dashboard</h1>
-    <p>This dashboard was created by Adriana Carballeda for the WEB-115 course at Wake Tech.</p>
+    <header class="dashboard-header">
+        <h1>My Interactive Dashboard</h1>
+        <p>This dashboard was created by Adriana Carballeda for the WEB-115 course at Wake Tech.</p>
     
-    <script>
-        document.write("This dashboard demostrate how JavaScript can be used to create interactive websites.")
-    </script>
+        <script>
+            document.write("This dashboard demostrate how JavaScript can be used to create interactive websites.")
+        </script>
+    </header>
     
     <!--The <noscript> is for web browsers with JavaScript rendering disabled.--> 
     <noscript>
@@ -88,6 +93,25 @@
                 </form>
                 <br>
             </div>
+
+        <!--Task Manager-->
+            <div class="col" id="weekly-tasks">
+                <div id="task-list">
+                    
+                    <h3>Weekly Task List</h3>
+                    <p>Enter a task below to manage your goals.</p>
+
+                    <form>
+                        <label for="task-name">Enter task:</label>
+                        <input type="text" id="task-name">
+
+                        <button type="button" id="add-task">
+                            Add Task
+                        </button>
+                    </form>
+                </div>
+            </div>   
+
 
         </div>
     </div>
