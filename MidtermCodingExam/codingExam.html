@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amortization Schedule</title>
+</head>
+<body>
+    <p>Name:Adriana Carballeda Garcia</p>
+    <p>Email:adcarballedagarcia@my.waketech.edu</p>
+    <p>Date:10/19/2026</p>
+
+    <h1> Amortization Schedule</h1>
+    <button id="Button1">Display Amortization Schedule</button>
+
+    <div id = "results"></div>
+
+    <script>
+        //Create a button with the id "Button1". Use an event listener to call function when the button is clicked.
+        let button = document.getElementById("Button1");
+        button.addEventListener("click", displaySchedule);
+
+        //Function to display the amortization schedule.
+        function displaySchedule() {
+            //Ask the user for the loan amount(without commas).
+            let loanAmount = parseFloat(prompt("Enter the loan amount (without commas):"));
+
+            if (isNaN(loanAmount) || loanAmount <= 0) {
+                alert("Please enter a valid loan amount.");
+                return;
+            }
+
+            //Ask user to enter loan term in years. Check if the loan term is either 15 or 30 years.
+            let termYears = parseInt(prompt("Enter the loan term in years (15 or 30):"));
+            
+            if (termYears !== 15 && termYears !== 30) {
+                alert("Invalid loan term. Please enter either 15 or 30.");
+                return;
+            }
+            
+            //Calculate the monthly mortgage payment using the fixed annual interest rate to 5.75%.
+            let interestRate = 0.0575;
+
+            let monthlyPayment = (((interestRate / 12) * loanAmount) / (1 - Math.pow(1 + (interestRate / 12), (termYears * -12)))).toFixed(2);
+        
+            //Calculate the total number of monthly payments.
+            let termMonths = termYears * 12;
+
+            //Calculate tje total interest paid over the loan term.
+            let totalInterest = (monthlyPayment * termMonths) - loanAmount;
+
+            //Calculate total morgage amount including interest.
+            let totalLoan = loanAmount + totalInterest;
+            
+             // Display the mortgage information on the page
+            let results = document.getElementById("results");
+
+            results.innerHTML = "<h2>Mortgage Information</h2>" +
+                "<p>Mortgage Term: " + termYears + " years</p>" +
+                "<p>Interest Rate: " + (interestRate * 100).toFixed(2) + "%</p>" +
+                "<p>Loan Amount: $" + loanAmount.toFixed(2) + "</p>" +
+                "<p>Monthly Payment: $" + monthlyPayment + "</p>" +
+                "<p>Total Interest: $" + totalInterest.toFixed(2) + "</p>" +
+                "<p>Total Mortgage Amount: $" + totalLoan.toFixed(2) + "</p>";
+            
+
+            
+            // Set the starting balance to the total mortgage amount
+            let balance = totalLoan;
+
+            // Add a heading for the amortization schedule
+            results.innerHTML += "<h2>Amortization Schedule</h2>";
+
+            // Loop through each monthly payment
+            for (let month = 1; month <= termMonths; month++) {
+
+                balance = balance - monthlyPayment;
+
+                // Prevent a negative balance on the last payment
+                if (balance <= 0.005) {
+                    balance = 0;
+                }
+
+                // Display the month, payment, and remaining balance
+                results.innerHTML += "<p>Month " + month +
+                    " | Payment: $" + monthlyPayment +
+                    " | Balance: $" + balance.toFixed(2) + "</p>";
+            
+                //Check if the remaining balance reaches zero
+                if (balance === 0) {
+                    results.innerHTML += "<p>This is the Ending Amortization Calculator...</p>";
+                    break;
+                }        
+            
+            }
+        
+        }
+    </script>
+</body>
+</html>
