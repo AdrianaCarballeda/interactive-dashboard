@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Manager</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: Arial, sans-serif;
+      background: #eef2f7;
+      color: #243047;
+    }
+
+    main {
+      max-width: 750px;
+      margin: 30px auto;
+    }
+
+    .panel {
+      background: white;
+      padding: 24px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 14px #00000012;
+    }
+
+    label {
+      display: block;
+      margin-top: 16px;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      border: 1px solid #aeb9cc;
+      border-radius: 6px;
+      font: inherit;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font: inherit;
+      background: #4054b2;
+      color: white;
+    }
+
+    button:hover {
+      filter: brightness(0.9);
+    }
+
+    button:focus-visible {
+      outline: 3px solid #8597ff;
+      outline-offset: 3px;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .delete-button {
+      background: #b42318;
+    }
+
+    .task {
+      padding: 16px;
+      margin-top: 14px;
+      border: 1px solid #dce2ed;
+      border-left: 6px solid;
+      border-radius: 8px;
+    }
+
+    .task-heading {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .task-name {
+      margin: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .task-info {
+      font-size: 14px;
+      color: #586579;
+    }
+
+    #status {
+      min-height: 24px;
+    }
+
+    @media (max-width: 500px) {
+      body {
+        padding: 12px;
+      }
+
+      .panel {
+        padding: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>Task Manager</h1>
+    <p>Organize your tasks and track your progress.</p>
+
+    <section class="panel">
+      <h2 id="form-title">Create a task</h2>
+
+      <form id="task-form">
+        <label for="task-name">Task name</label>
+        <input
+          type="text"
+          id="task-name"
+          placeholder="Enter a task"
+          maxlength="150"
+          required
+        >
+
+        <label for="task-priority">Priority</label>
+        <select id="task-priority">
+          <option value="High">High</option>
+          <option value="Medium" selected>Medium</option>
+          <option value="Low">Low</option>
+        </select>
+
+        <label class="checkbox-label">
+          <input type="checkbox" id="task-important">
+          Mark as important
+        </label>
+
+        <div class="buttons">
+          <button type="submit" id="submit-button">Add Task</button>
+          <button type="button" id="cancel-button" hidden>
+            Cancel Edit
+          </button>
+        </div>
+      </form>
+
+      <p id="status" role="status"></p>
+    </section>
+
+    <section class="panel">
+      <h2>Your tasks</h2>
+
+      <button type="button" id="delete-list" class="delete-button">
+        Delete List
+      </button>
+
+      <div id="task-list"></div>
+    </section>
+  </main>
+
+  <script>
+    "use strict";
+
+    // Store tasks as objects inside an array.
+    let tasks = [];
+    let nextId = 1;
+    let editingId = null;
+
+    // Select the HTML elements.
+    const taskForm = document.getElementById("task-form");
+    const taskName = document.getElementById("task-name");
+    const taskPriority = document.getElementById("task-priority");
+    const taskImportant = document.getElementById("task-important");
+    const taskList = document.getElementById("task-list");
+    const submitButton = document.getElementById("submit-button");
+    const cancelButton = document.getElementById("cancel-button");
+    const deleteListButton = document.getElementById("delete-list");
+    const status = document.getElementById("status");
+
+    // Log the full array after every change and refresh the display.
+    function updateDisplay(message) {
+      console.log(JSON.stringify(tasks));
+      displayTasks();
+      status.textContent = message;
+    }
+
+    // Add a new task object.
+    function addTask(name, priority, isImportant) {
+      const task = {
+        id: nextId++,
+        name: name,
+        priority: priority,
+        isImportant: isImportant,
+        isCompleted: false
+      };
+
+      tasks.push(task);
+      updateDisplay("Task added.");
+    }
+
+    // Update the selected task.
+    function updateTask(id, name, priority, isImportant) {
+      const task = tasks.find(task => task.id === id);
+
+      if (!task) return;
+
+      task.name = name;
+      task.priority = priority;
+      task.isImportant = isImportant;
+
+      updateDisplay("Task updated.");
+    }
+
+    // Mark a task complete or incomplete.
+    function completeTask(id, isCompleted) {
+      const task = tasks.find(task => task.id === id);
+
+      if (!task) return;
+
+      task.isCompleted = isCompleted;
+      updateDisplay(
+        isCompleted ? "Task completed." : "Task reopened."
+      );
+
+      document.getElementById("complete-" + id).focus();
+    }
+
+    // Load a task into the form for editing.
+    function editTask(id) {
+      const task = tasks.find(task => task.id === id);
+
+      if (!task) return;
+
+      editingId = id;
+      taskName.value = task.name;
+      taskPriority.value = task.priority;
+      taskImportant.checked = task.isImportant;
+
+      submitButton.textContent = "Save Changes";
+      cancelButton.hidden = false;
+      document.getElementById("form-title").textContent = "Edit task";
+
+      taskName.focus();
+    }
+
+    // Delete one task.
+    function deleteTask(id) {
+      tasks = tasks.filter(task => task.id !== id);
+
+      if (editingId === id) {
+        resetForm();
+      }
+
+      updateDisplay("Task deleted.");
+      taskName.focus();
+    }
+
+    // Delete the entire task list.
+    function deleteTaskList() {
+      tasks = [];
+      resetForm();
+      updateDisplay("Task list deleted.");
+      taskName.focus();
+    }
+
+    // Return the form to add mode.
+    function resetForm() {
+      taskForm.reset();
+      editingId = null;
+      submitButton.textContent = "Add Task";
+      cancelButton.hidden = true;
+      document.getElementById("form-title").textContent =
+        "Create a task";
+      taskName.setCustomValidity("");
+    }
+
+    // Display tasks using DOM nodes.
+    function displayTasks() {
+      taskList.replaceChildren();
+      deleteListButton.disabled = tasks.length === 0;
+
+      if (tasks.length === 0) {
+        const message = document.createElement("p");
+        message.textContent = "No tasks yet. Add one above!";
+        taskList.appendChild(message);
+        return;
+      }
+
+      tasks.forEach(task => {
+        const taskDiv = document.createElement("div");
+        taskDiv.className = "task";
+
+        // Apply priority styling with JavaScript.
+        if (task.priority === "High") {
+          taskDiv.style.borderLeftColor = "#b45309";
+        } else if (task.priority === "Medium") {
+          taskDiv.style.borderLeftColor = "#4054b2";
+        } else {
+          taskDiv.style.borderLeftColor = "#16705b";
+        }
+
+        const heading = document.createElement("div");
+        heading.className = "task-heading";
+
+        // Create a completion checkbox as a DOM node.
+        const completeCheckbox = document.createElement("input");
+        completeCheckbox.type = "checkbox";
+        completeCheckbox.id = "complete-" + task.id;
+        completeCheckbox.checked = task.isCompleted;
+
+        completeCheckbox.addEventListener("change", function () {
+          completeTask(task.id, completeCheckbox.checked);
+        });
+
+        const name = document.createElement("label");
+        name.className = "task-name";
+        name.htmlFor = completeCheckbox.id;
+        name.textContent = task.name;
+
+        // Important tasks appear in red.
+        name.style.color = task.isImportant ? "red" : "#243047";
+
+        // Completed tasks have a strikethrough.
+        name.style.textDecoration =
+          task.isCompleted ? "line-through" : "none";
+
+        heading.append(completeCheckbox, name);
+
+        const information = document.createElement("p");
+        information.className = "task-info";
+        information.textContent =
+          "Priority: " + task.priority +
+          (task.isImportant ? " | Important" : "") +
+          (task.isCompleted ? " | Completed" : " | Open");
+
+        const buttons = document.createElement("div");
+        buttons.className = "buttons";
+
+        const editButton = document.createElement("button");
+        editButton.type = "button";
+        editButton.textContent = "Edit";
+        editButton.addEventListener("click", function () {
+          editTask(task.id);
+        });
+
+        const deleteButton = document.createElement("button");
+        deleteButton.type = "button";
+        deleteButton.textContent = "Delete";
+        deleteButton.className = "delete-button";
+        deleteButton.addEventListener("click", function () {
+          deleteTask(task.id);
+        });
+
+        buttons.append(editButton, deleteButton);
+        taskDiv.append(heading, information, buttons);
+        taskList.appendChild(taskDiv);
+      });
+    }
+
+    // Handle adding and saving tasks.
+    taskForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const name = taskName.value.trim();
+
+      if (name === "") {
+        taskName.setCustomValidity("Please enter a task name.");
+        taskName.reportValidity();
+        return;
+      }
+
+      if (editingId === null) {
+        addTask(
+          name,
+          taskPriority.value,
+          taskImportant.checked
+        );
+      } else {
+        updateTask(
+          editingId,
+          name,
+          taskPriority.value,
+          taskImportant.checked
+        );
+      }
+
+      resetForm();
+      taskName.focus();
+    });
+
+    taskName.addEventListener("input", function () {
+      taskName.setCustomValidity("");
+    });
+
+    cancelButton.addEventListener("click", function () {
+      resetForm();
+      taskName.focus();
+    });
+
+    deleteListButton.addEventListener("click", deleteTaskList);
+
+    // Show the initial empty state.
+    displayTasks();
+  </script>
+</body>
+</html>
