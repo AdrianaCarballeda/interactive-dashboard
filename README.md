@@ -2,8 +2,8 @@
 This project is a web-based dashboard built for WEB-115 to demonstrate and practice with interactive JavaScript features.
 
 ## TO DO: Future Enhancements
-- [ ] Add a metric conversion tool.
-- [ ] Integrate a task list with array storage.
+- [x] Add a metric conversion tool.
+- [x] Integrate a task list with array storage.
 - [ ] Add JavaScript logic for a live clock.
 
 ## Imperial/Metric Converter
@@ -57,3 +57,7 @@ END
 
 ## Magic Eight Ball
 The Magic Eight Ball is an interactive application that allows the user to type a yes/no question and click the Magic Eight Ball to receive a random response. The application uses JavaScript event listeners, conditional statements, an array of possible answers and the Math.random() method to select and display a response. The reset button allows the user to clear the current question and ask another one.
+
+
+## Task Manager
+The Task Manager allows users to add, edit, and delete tasks, choose a priority, and mark tasks as important or complete. Important tasks appear in red, and completed tasks have a strikethrough. The application uses JavaScript DOM elements and an array of objects to manage tasks, and logs each change to the console using JSON.stringify(). The Delete List button clears all tasks.
