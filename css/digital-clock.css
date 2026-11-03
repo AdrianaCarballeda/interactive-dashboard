@@ -1,0 +1,22 @@
+/* Clock container */
+#digital-clock {
+    background-color: #f0f4f8;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+/* Time display */
+#clock-face {
+    color:moccasin;
+    font-family: monospace;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Date display */
+#calendar-date {
+    color: #444;
+    font-size: 1.1rem;
+}
