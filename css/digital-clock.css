@@ -5,10 +5,15 @@
     border-radius: 10px;
     text-align: center;
 }
-
+/* Background for the heading */
+#digital-clock h3 {
+    background-color:mistyrose;
+    color: black;
+    padding: 10px;
+}
 /* Time display */
 #clock-face {
-    color:moccasin;
+    color:darkred;
     font-family: monospace;
     font-size: 2rem;
     font-weight: bold;
